@@ -50,7 +50,7 @@ Const dataGroup As String = "000000000000000000000000000" '00000"
 
 Public Function PutCard(ByVal strCardNo As String) As Integer '发卡
     Dim strCardRead As String
-    
+
     If Len(strCardNo) <> 5 Then
         PutCard = 20 '卡号需为5位
         Exit Function
@@ -60,10 +60,10 @@ Public Function PutCard(ByVal strCardNo As String) As Integer '发卡
         PutCard = 1 '设备初始化端口失败
         Exit Function
     End If
-        
+
     '寻卡
     st = rf_reset(icdev, 10) '射频读写模块复位
-    
+
     st = rf_request(icdev, 1, tagtype)
     If st <> 0 Then
     PutCard = 11 '寻卡请求失败
@@ -77,26 +77,26 @@ Public Function PutCard(ByVal strCardNo As String) As Integer '发卡
         Call quit
         Exit Function
     End If
-            
+
     st = rf_select(icdev, Snr, Size)
     If st <> 0 Then
         PutCard = 13 '从多个卡中选取一个给定序列号的卡
         Call quit
         Exit Function
     End If
-    
+
         '装载B密码
-    bkey(0) = &HB0
-    bkey(1) = &H11
-    bkey(2) = &H4C
-    bkey(3) = &HE9
-    bkey(4) = &HA3
-    bkey(5) = &HD7
-    
-    
+    bkey(0) = &H01
+    bkey(1) = &H02
+    bkey(2) = &H03
+    bkey(3) = &H04
+    bkey(4) = &H05
+    bkey(5) = &H06
+
+
     loadmode = 4
     sector = 1
-        
+
    st = rf_load_key(ByVal icdev, loadmode, sector, bkey(0))
     If st <> 0 Then
         PutCard = 3 '装载密码B出错
@@ -105,26 +105,26 @@ Public Function PutCard(ByVal strCardNo As String) As Integer '发卡
     End If
 
     '验证密码B
-    
+
     st = rf_authentication(ByVal icdev, loadmode, sector)
     If st <> 0 Then
         PutCard = 5 '该卡片不属于本系统所使用
         Call quit
         Exit Function
     End If
-    
-    
+
+
     '装载密码A
-    akey(0) = &HA3 '0xa3
-    akey(1) = &HD4 '0xd4
-    akey(2) = &H56 '0x56
-    akey(3) = &H8C '0x8c
-    akey(4) = &HB9 '0xb9
-    akey(5) = &HE5 '0xe5
-    
+    akey(0) = &H01
+    akey(1) = &H02
+    akey(2) = &H03
+    akey(3) = &H04
+    akey(4) = &H05
+    akey(5) = &H06
+
     loadmode = 0
     sector = 1
-       
+
     st = rf_load_key(ByVal icdev, loadmode, sector, akey(0))
     If st <> 0 Then
         PutCard = 2 '装载密码A出错
@@ -139,12 +139,12 @@ Public Function PutCard(ByVal strCardNo As String) As Integer '发卡
         Call quit
         Exit Function
     End If
-    
+
 
 
     '获取卡序号
     'cardmode = 1
-    
+
     'st = rf_card(ByVal icdev, cardmode, Snr)
     'If st <> 0 Then
     '    PutCard = 4 '获取会员卡序号出错
@@ -186,14 +186,14 @@ Public Function PutCard(ByVal strCardNo As String) As Integer '发卡
         Call quit
         Exit Function
     End If
-    
+
     st = rf_beep(icdev, 5)
 
     PutCard = 0
     '取消设备
     Call quit
-        
-       
+
+
 End Function
 
 Public Function ReadCard(strCardNo As String) As Integer '读卡
@@ -207,7 +207,7 @@ Public Function ReadCard(strCardNo As String) As Integer '读卡
 
      '寻卡
     st = rf_reset(icdev, 10) '射频读写模块复位
-    
+
     st = rf_request(icdev, 1, tagtype)
     If st <> 0 Then
         ReadCard = 11 '寻卡请求失败
@@ -221,21 +221,21 @@ Public Function ReadCard(strCardNo As String) As Integer '读卡
         Call quit
         Exit Function
     End If
-            
+
     st = rf_select(icdev, Snr, Size)
     If st <> 0 Then
         ReadCard = 13 '从多个卡中选取一个给定序列号的卡
         Call quit
         Exit Function
     End If
-    
+
     '装载B密码
-    bkey(0) = &HB0
-    bkey(1) = &H11
-    bkey(2) = &H4C
-    bkey(3) = &HE9
-    bkey(4) = &HA3
-    bkey(5) = &HD7
+    bkey(0) = &H01
+    bkey(1) = &H02
+    bkey(2) = &H03
+    bkey(3) = &H04
+    bkey(4) = &H05
+    bkey(5) = &H06
     loadmode = 4
     sector = 1
     st = rf_load_key(ByVal icdev, loadmode, sector, bkey(0))
@@ -244,7 +244,7 @@ Public Function ReadCard(strCardNo As String) As Integer '读卡
           Call quit
           Exit Function
     End If
-    
+
     '验证密码B
     st = rf_authentication(ByVal icdev, loadmode, sector)
     If st <> 0 Then
@@ -262,7 +262,7 @@ Public Function ReadCard(strCardNo As String) As Integer '读卡
     '      Exit Function
     'End If
 
-    
+
 
     '装载密码A
     akey(0) = &HA3
@@ -304,14 +304,14 @@ Public Function ReadCard(strCardNo As String) As Integer '读卡
         Exit Function
     End If
 
-   
+
 
     st = rf_beep(icdev, 5)
-    
+
     ReadCard = 0
     '取消设备
     Call quit
-    
+
 End Function
 
 
